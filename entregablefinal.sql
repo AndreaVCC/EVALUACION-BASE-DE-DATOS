@@ -119,15 +119,15 @@ insert into programa (programa_id, programa_nombre) values (1,'java');
 insert into programa (programa_id, programa_nombre) values (2,'android ');
 
 --CURSOS
---curso de viña , programa java
-insert into curso (curso_id, curso_nombre,curso_programa_id) values (1,'viña',1);
+--curso de viÃ±a , programa java
+insert into curso (curso_id, curso_nombre,curso_programa_id) values (1,'viÃ±a',1);
 --curso de santiago , programa java
 insert into curso (curso_id, curso_nombre,curso_programa_id) values (2,'santiago',1);
 --curso de santiago, programa android
 insert into curso (curso_id, curso_nombre,curso_programa_id) values (3,'santiago',2);
 
 --ALUMNOS
---alumnos registrados en curso de VIÑA(1) y programa JAVA(1)
+--alumnos registrados en curso de VIÃ‘A(1) y programa JAVA(1)
 insert into alumnos (alumno_id, alumno_nombre, alumno_curso_id) values (1,'juan',1);
 insert into alumnos (alumno_id, alumno_nombre, alumno_curso_id) values (3,'rosa',1);
 insert into alumnos (alumno_id, alumno_nombre, alumno_curso_id) values (4,'pedro',1);
@@ -790,7 +790,7 @@ insert into ar (ar_respuesta_id, ar_at_id) values(90,42);
 
 --CONSULTAS
 
---1.Pregunta 1: Conocer el número de evaluaciones por curso.
+--1.Pregunta 1: Conocer el nÃºmero de evaluaciones por curso.
 select count(test_id) as CANTIDAD_TEST, alumno_curso_id as CURSO
 from at
 RIGHT join alumnos
@@ -812,7 +812,7 @@ full join programa
 on programa_id = curso_programa_id
 where test_id is null;
 
--- Pregunta 3: Determinar las evaluaciones con deficiencia. Una evaluación es deficiente: 
+-- Pregunta 3: Determinar las evaluaciones con deficiencia. Una evaluaciÃ³n es deficiente: 
 
 --UNA SOLA QUERY
  select test_id as ID_TEST_DEFICIENTE from test MINUS select pregunta_test_id from pregunta 
@@ -842,7 +842,7 @@ SELECT test_nombre as TEST_SIN_PREGUNTAS
 from TEST
 left join PREGUNTA on pregunta_test_id = test_id
 WHERE PREGUNTA_TEST_ID is null;            
---b.Si hay preguntas con 2ó menos alternativas
+--b.Si hay preguntas con 2Ã³ menos alternativas
 SELECT c.test_id as "TEST CON 2 O MENOS ALTERN", c.test_nombre, x.pregunta_id, x.pregunta_enunciado
 FROM (
     SELECT a.pregunta_id, a.pregunta_enunciado, a.pregunta_test_id
@@ -869,7 +869,7 @@ WHERE ( x.nro_alternativas  =  NVL(x.nro_true,0) )
 OR    (  x.nro_alternativas =  NVL(x.nro_false,0) );
 
 
---4: Determinar cuántos alumnos hay en cada curso.
+--4: Determinar cuÃ¡ntos alumnos hay en cada curso.
 SELECT p.programa_nombre, c.curso_nombre AS CURSO, COUNT(c.curso_programa_id) AS TOTAL_ALUMNOS
 FROM ALUMNOS A 
 RIGHT JOIN CURSO C
@@ -878,10 +878,10 @@ RIGHT JOIN  PROGRAMA P
 ON c.curso_programa_id = p.programa_id
 GROUP BY p.programa_nombre, c.curso_nombre, A.alumno_curso_id;
 
---5: Obtener  el  puntaje  no  normalizado  de  cada  evaluación.  El  puntaje  no normalizado ha sido definido (requerimiento) 
---como: P = buenas – malas/4. Si un alumno no contesta en una pregunta exactamente lo mismo que se ha definido como correcto,
+--5: Obtener  el  puntaje  no  normalizado  de  cada  evaluaciÃ³n.  El  puntaje  no normalizado ha sido definido (requerimiento) 
+--como: P = buenas Â– malas/4. Si un alumno no contesta en una pregunta exactamente lo mismo que se ha definido como correcto,
 --la pregunta cuenta como mala a menos que el alumno haya omitido
-select (sum(pregunta_puntaje* respuesta_porcentaje / 100)/4 ) * 0.70 as nota, at_alumno_id, at_test_id
+select (sum(pregunta_puntaje* respuesta_porcentaje / 100)/4 ) as nota, at_alumno_id, at_test_id
 from pregunta
 inner join respuestas
 on respuesta_pregunta_id = pregunta_id
@@ -905,8 +905,8 @@ on at_id = ar_at_id
 group by at_id,at_alumno_id, at_test_id
 order by at_alumno_id;
 
---7: Nombre  de  estudiantes  de  un  curso  determinado  que  aprueban  una evaluación determinada (donde la nota de aprobación
---mínima es un 4,0).
+--7: Nombre  de  estudiantes  de  un  curso  determinado  que  aprueban  una evaluaciÃ³n determinada (donde la nota de aprobaciÃ³n
+--mÃ­nima es un 4,0).
 select sum( pregunta_puntaje * respuesta_porcentaje / 100) * 0.70 as NOTA , at_alumno_id, alumno_nombre,at_test_id, alumno_curso_id
 from pregunta 
 inner join respuestas
@@ -920,7 +920,7 @@ on alumno_id = at_alumno_id
 group by at_alumno_id, alumno_nombre, at_test_id, alumno_curso_id
 having sum( pregunta_puntaje * respuesta_porcentaje / 100) * 0.70 > 4 and at_test_id = 22 and alumno_curso_id = 1;
 
---8:Nota  promedio  de  los  estudiantes  de  un  curso  determinado,  para  una evaluación de terminada.
+--8:Nota  promedio  de  los  estudiantes  de  un  curso  determinado,  para  una evaluaciÃ³n de terminada.
 select (sum( pregunta_puntaje * respuesta_porcentaje / 100) * 0.70 ) / (select count(alumno_id) from alumnos 
                                                               where alumno_curso_id = 2 
                                                               and at_test_id = 22 )  as PROMEDIO_CURSO,  
